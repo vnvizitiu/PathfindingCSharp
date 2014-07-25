@@ -1,0 +1,12 @@
+F:\Zooi\github\Pathfinding\Pathfinding\Pathfinding\obj\x86\Debug\Pathfinding.csprojResolveAssemblyReference.cache
+F:\Zooi\github\Pathfinding\Pathfinding\Pathfinding\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+F:\Zooi\github\Pathfinding\Pathfinding\Pathfinding\bin\x86\Debug\Pathfinding.exe
+F:\Zooi\github\Pathfinding\Pathfinding\Pathfinding\bin\x86\Debug\Pathfinding.pdb
+F:\Zooi\github\Pathfinding\Pathfinding\Pathfinding\obj\x86\Debug\Pathfinding.exe
+F:\Zooi\github\Pathfinding\Pathfinding\Pathfinding\obj\x86\Debug\Pathfinding.pdb
+F:\Zooi\github\PathfindingCSharp\Pathfinding\Pathfinding\bin\x86\Debug\Pathfinding.exe
+F:\Zooi\github\PathfindingCSharp\Pathfinding\Pathfinding\bin\x86\Debug\Pathfinding.pdb
+F:\Zooi\github\PathfindingCSharp\Pathfinding\Pathfinding\obj\x86\Debug\Pathfinding.csprojResolveAssemblyReference.cache
+F:\Zooi\github\PathfindingCSharp\Pathfinding\Pathfinding\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+F:\Zooi\github\PathfindingCSharp\Pathfinding\Pathfinding\obj\x86\Debug\Pathfinding.exe
+F:\Zooi\github\PathfindingCSharp\Pathfinding\Pathfinding\obj\x86\Debug\Pathfinding.pdb
