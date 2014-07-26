@@ -11,6 +11,52 @@ namespace Pathfinding {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
+        private Tile start = null;
+        public Tile Start {
+            get {
+                if(start != null) {
+                    return start;
+                } else {
+                    if(IsValidGrid()) {
+                        for(int x = 0; x < Width; x++) {
+                            for(int y = 0; y < Height; y++) {
+                                if(Grid[x, y] != null) {
+                                    if(Grid[x, y].Type == TileType.START) {
+                                        start = Grid[x, y];
+                                        return start;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+            }
+        }
+
+        private Tile end = null;
+        public Tile End {
+            get {
+                if(end != null) {
+                    return end;
+                } else {
+                    if(IsValidGrid()) {
+                        for(int x = 0; x < Width; x++) {
+                            for(int y = 0; y < Height; y++) {
+                                if(Grid[x, y] != null) {
+                                    if(Grid[x, y].Type == TileType.END) {
+                                        end = Grid[x, y];
+                                        return end;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+            }
+        }
+
         public TileGridSource Source;
 
         public TileGrid(int width, int height) {
@@ -20,7 +66,7 @@ namespace Pathfinding {
             Grid = new Tile[width, height];
         }
 
-        public List<Tile> GetNeighbours(Tile t) {
+        public List<Tile> GetNeighbours(Tile t, NeighbourOrder order) {
             for(int x = 0; x < Width; x++) {
                 for(int y = 0; y < Height; y++) {
                     Tile current = Grid[x, y];
@@ -38,6 +84,40 @@ namespace Pathfinding {
                         }
                         if(y < Height - 1) {
                             returnList.Add(Grid[x, y + 1]);//Bottom
+                        }
+
+                        if(order == NeighbourOrder.RANDOM) {
+                            Random ran = new Random();
+                            int n = returnList.Count;
+                            while(n > 1) {
+                                n--;
+                                int k = ran.Next(n + 1);
+                                var value = returnList[k];
+                                returnList[k] = returnList[n];
+                                returnList[n] = value;
+                            }
+                        } else if(order == NeighbourOrder.SMART) {
+                            var SmartList = new List<Tile>();
+                            var SmartListScores = new int[returnList.Count];
+
+                            for(int i = 0; i < returnList.Count(); i++) {
+                                SmartListScores[i] = DistanceToEnd(returnList[i]);
+                            }
+                            for(int j = 0; j < returnList.Count(); j++) {
+                                int lowestIndex = -1;
+                                int lowest = Int32.MaxValue;
+                                for(int i = 0; i < SmartListScores.Count(); i++) {
+                                    if(SmartListScores[i] != -1) {
+                                        if(lowest > SmartListScores[i]) {
+                                            lowest = SmartListScores[i];
+                                            lowestIndex = i;
+                                        }
+                                    }
+                                }
+                                SmartList.Add(returnList[lowestIndex]);
+                                SmartListScores[lowestIndex] = -1;
+                            }
+                            returnList = SmartList;
                         }
                         return returnList;
                     }
@@ -129,6 +209,32 @@ namespace Pathfinding {
             return (hasStart && hasEnd);
         }
 
+        public Vector2 GetCoordinates(Tile t) {
+            for(int x = 0; x < Width; x++) {
+                for(int y = 0; y < Height; y++) {
+                    if(Grid[x, y].Equals(t)) {
+                        return new Vector2(x, y);
+                    }
+                }
+            }
+            return new Vector2(-1, -1);
+        }
+
+        public int DistanceToEnd(Tile t) {
+            int tileX = (int) GetCoordinates(t).X;
+            int tileY = (int) GetCoordinates(t).Y;
+            int endX = (int)GetCoordinates(End).X;
+            int endY = (int)GetCoordinates(End).Y;
+
+            return (Math.Abs(tileX - endX) + Math.Abs(tileY - endY));
+        }
+
+        public void ResetColors() {
+            foreach(Tile t in Grid) {
+                t.ResetColor();
+            }
+        }
+
         public void Draw(SpriteBatch sb, int gridX, int gridY, int gridWidth, int gridHeight) {
             int pixelWidth = gridWidth / Width;
             int pixelHeight = gridHeight / Height;
@@ -147,5 +253,9 @@ namespace Pathfinding {
 
     enum TileGridSource { 
         EMPTY, RANDOM, FILE
+    }
+
+    enum NeighbourOrder { 
+        STANDARD, RANDOM, SMART
     }
 }

@@ -41,6 +41,10 @@ namespace Pathfinding {
             Id = idCounter;
             idCounter++;
         }
+
+        public void ResetColor() {
+            hasCustomColor = false;
+        }
     }
 
     enum TileType {

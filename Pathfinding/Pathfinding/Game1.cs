@@ -15,7 +15,10 @@ namespace Pathfinding {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        TileGrid TileGrid;
+        private TileGrid TileGrid;
+        private PathFinder PathFinder;
+
+        private bool Started = false;
 
         public static SpriteFont SimpleFont;
         public static Texture2D EmptyPixel;
@@ -54,7 +57,22 @@ namespace Pathfinding {
             if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            if(!Started) {
+                if(Keyboard.GetState().IsKeyDown(Keys.F1)) {
+                    Started = true;
+                    PathFinder = new DepthFirst(TileGrid, NeighbourOrder.STANDARD);
+                } else if(Keyboard.GetState().IsKeyDown(Keys.F2)) {
+                    Started = true;
+                    PathFinder = new DepthFirst(TileGrid, NeighbourOrder.RANDOM);
+                } else if(Keyboard.GetState().IsKeyDown(Keys.F3)) {
+                    Started = true;
+                    PathFinder = new DepthFirst(TileGrid, NeighbourOrder.SMART);
+                }
+            }
+
+            if(Started) {
+                PathFinder.DoStep();
+            }
 
             base.Update(gameTime);
         }
@@ -66,10 +84,16 @@ namespace Pathfinding {
 
             string drawString = "";
 
-            if(TileGrid.Source == TileGridSource.FILE) {
-                drawString += "Loaded level.bmp";
+            if(!Started) {
+                if(TileGrid.Source == TileGridSource.FILE) {
+                    drawString += "Loaded level.bmp | ";
+                } else {
+                    drawString += "Couldn't find level.bmp | ";
+                }
+
+                drawString += "Depth Firs: DFStandard=F1, DFRandom=F2, DFSMART=F3 -- F4 = A* ";
             } else {
-                drawString += "Couldn't find level.bmp";
+                drawString += "Working=" + !PathFinder.IsDone + " & Stepcount=" + PathFinder.StepCount + " ";
             }
 
             spriteBatch.Begin();
