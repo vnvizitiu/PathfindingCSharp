@@ -11,6 +11,8 @@ namespace Pathfinding {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
+        public TileGridSource Source;
+
         public TileGrid(int width, int height) {
             Width = width;
             Height = height;
@@ -45,6 +47,7 @@ namespace Pathfinding {
         }
 
         public void GenEmptyGrid() {
+            Source = TileGridSource.EMPTY;
             for(int x = 0; x < Width; x++) {
                 for(int y = 0; y < Height; y++) {
                     Grid[x, y] = new Tile(TileType.OPEN);
@@ -56,6 +59,7 @@ namespace Pathfinding {
         }
 
         public void GenRandomGrid(Double closedPercentage) {
+            Source = TileGridSource.RANDOM;
             Random ran = new Random();
             for(int x = 0; x < Width; x++) {
                 for(int y = 0; y < Height; y++) {
@@ -71,6 +75,37 @@ namespace Pathfinding {
 
             if(!IsValidGrid()) {
                 GenRandomGrid(closedPercentage);
+            }
+        }
+
+        public void GenFromFile(System.Drawing.Bitmap img) {
+            Source = TileGridSource.FILE;
+
+            if(img.Width != Width || img.Height != Height){
+                GenEmptyGrid();
+                return;
+            }
+
+            for (int x = 0; x < Width; x++){
+                for (int y = 0; y < Height; y++){
+                    System.Drawing.Color pixel = img.GetPixel(x, y);
+
+                    if (pixel.R == 0 && pixel.G == 0 && pixel.B == 0){ //#000000 - Black
+                        Grid[x, y] = new Tile(TileType.CLOSED);
+                    } else if(pixel.R == 255 && pixel.G == 255 && pixel.B == 255) { //#FFFFFF - White
+                        Grid[x, y] = new Tile(TileType.OPEN);
+                    } else if(pixel.R == 255 && pixel.G == 0 && pixel.B == 0) { //#FF0000 - Red
+                        Grid[x, y] = new Tile(TileType.END);
+                    } else if(pixel.R == 0 && pixel.G == 255 && pixel.B == 0) { //#00FF00 - Green
+                        Grid[x, y] = new Tile(TileType.START);
+                    } else {
+                        Grid[x, y] = new Tile(TileType.OPEN);
+                    }
+                }
+            }
+
+            if(!IsValidGrid()){
+                GenEmptyGrid();
             }
         }
 
@@ -108,5 +143,9 @@ namespace Pathfinding {
             }
             sb.End();
         }
+    }
+
+    enum TileGridSource { 
+        EMPTY, RANDOM, FILE
     }
 }
