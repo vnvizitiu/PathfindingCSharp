@@ -45,9 +45,8 @@ namespace Pathfinding {
                             }
                         }
                     }
+                    SetColors(current.BaseTile);
                 }
-
-                SetColors(current.BaseTile);
 
                 base.DoStep();
             }
@@ -109,7 +108,9 @@ namespace Pathfinding {
                 if(t.IsInPath) {
                     t.BaseTile.Color = new Color(255, 0, 0);
                 } else {
-                    t.BaseTile.Color = new Color(128, 64, 64);
+                    float gradient = (255f / (Grid.Height + Grid.Width));
+                    float R = (255f - (t.GScore * gradient));
+                    t.BaseTile.Color = new Color((int)R, 0, 0);
                 }
             }
             current.Color = new Color(0, 0, 255);

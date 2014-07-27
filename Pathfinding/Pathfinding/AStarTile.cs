@@ -7,18 +7,20 @@ namespace Pathfinding {
     class AStarTile {
         private TileGrid Grid;
 
+        public static float HScoreMultiplier = 2;
+
         public Tile BaseTile { get; private set; }
         public AStarTile Parent;
 
         public bool IsInPath = false;
 
-        public int FScore {
+        public int FScore { //the lower the score, the sooner this tile will be processed by A*
             get {
-                return GScore + (HScore * 2);
+                return (int)(GScore + (HScore * HScoreMultiplier));
             }
         }
 
-        public int GScore {
+        public int GScore {//Distance to START
             get {
                 if(Parent != null) {
                     return Parent.GScore + 1;
@@ -29,7 +31,7 @@ namespace Pathfinding {
         }
 
         private int hScore = -1;
-        public int HScore {
+        public int HScore {// Estimated distance to END
             get {
                 if(hScore == -1) {
                     hScore = Grid.DiagonalDistanceToEnd(BaseTile);

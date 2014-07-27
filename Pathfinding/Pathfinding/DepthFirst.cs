@@ -10,15 +10,14 @@ namespace Pathfinding {
         private List<Tile> path = new List<Tile>();
         private List<Tile> seen = new List<Tile>();
 
-        private NeighbourOrder TileSelectionMethod;
+        private NeighbourOrder TileSelectionMethod = NeighbourOrder.STANDARD;
 
-        public DepthFirst(TileGrid grid, NeighbourOrder no) : base(grid){
+        public DepthFirst(TileGrid grid) : base(grid){
             path.Add(grid.Start);
-            TileSelectionMethod = no;
         }
 
         public override void DoStep(){
-            if(!IsDone) {
+            if(!IsDone && path.Count > 0) {
                 bool deadEnd = true;
                 foreach(Tile t in Grid.GetNeighbours(path.Last(), TileSelectionMethod)) {
                     if(t.Type == TileType.END) {
@@ -34,8 +33,13 @@ namespace Pathfinding {
                         }
                     }
                 }
+
                 if(deadEnd) {
                     path.RemoveAt(path.Count - 1);
+                }
+
+                if(path.Count < 1) {
+                    IsDone = true;
                 }
 
                 SetColors();
@@ -52,7 +56,13 @@ namespace Pathfinding {
             foreach(Tile t in path) {
                 t.Color = new Color(128, 255, 128);
             }
-            path.Last().Color = new Color(0, 0, 255);
+            if(path.Count > 0) {
+                path.Last().Color = new Color(0, 0, 255);
+            }
+        }
+
+        public void SetNeighbourOrder(NeighbourOrder no) {
+            TileSelectionMethod = no;
         }
     }
 }

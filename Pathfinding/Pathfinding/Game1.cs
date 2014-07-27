@@ -15,13 +15,17 @@ namespace Pathfinding {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private Rectangle GridDrawArea = new Rectangle(0, 30, 700, 700);
+
         private TileGrid TileGrid;
         private PathFinder PathFinder;
 
-        private bool Started = false;
+        private SimState CurrentState = SimState.MENU_ALGORITHM_SELECT;
 
         public static SpriteFont SimpleFont;
         public static Texture2D EmptyPixel;
+
+        KeyboardState LastKeyState;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -32,6 +36,7 @@ namespace Pathfinding {
         }
 
         protected override void Initialize() {
+            LastKeyState = Keyboard.GetState();
             base.Initialize();
         }
 
@@ -57,28 +62,61 @@ namespace Pathfinding {
             if(GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            if(!Started) {
-                if(Keyboard.GetState().IsKeyDown(Keys.F1)) {
-                    Started = true;
-                    PathFinder = new DepthFirst(TileGrid, NeighbourOrder.STANDARD);
-                } else if(Keyboard.GetState().IsKeyDown(Keys.F2)) {
-                    Started = true;
-                    PathFinder = new DepthFirst(TileGrid, NeighbourOrder.RANDOM);
-                } else if(Keyboard.GetState().IsKeyDown(Keys.F3)) {
-                    Started = true;
-                    PathFinder = new DepthFirst(TileGrid, NeighbourOrder.SMART);
-                } else if(Keyboard.GetState().IsKeyDown(Keys.F4)) {
-                    Started = true;
-                    PathFinder = new AStar(TileGrid);
-                }
-            }
+            KeyboardState kState = Keyboard.GetState();
+            MouseState mState = Mouse.GetState();
+            Vector2 mPos = new Vector2(mState.X, mState.Y);
 
-            if(Started) {
+            if(CurrentState != SimState.STARTED) {
+                if(GridDrawArea.Contains((int)mPos.X, (int)mPos.Y)) {
+                    if(mState.LeftButton == ButtonState.Pressed) {
+                        TileGrid.LeftClick(mPos, GridDrawArea);
+                    } else if(mState.RightButton == ButtonState.Pressed) {
+                        TileGrid.RightClick(mPos, GridDrawArea);
+                    }
+                }
+            } else {
                 if(Keyboard.GetState().IsKeyDown(Keys.Enter)) {
                     PathFinder.RunTillDone();
                 }
                 PathFinder.DoStep();
             }
+
+            if(CurrentState == SimState.MENU_DEPTHFIRST_OPTIONS) {
+                if(kState.IsKeyDown(Keys.F1) && LastKeyState.IsKeyUp(Keys.F1)) {
+                    ((DepthFirst)(PathFinder)).SetNeighbourOrder(NeighbourOrder.STANDARD);
+                    CurrentState = SimState.STARTED;
+                } else if(kState.IsKeyDown(Keys.F2) && LastKeyState.IsKeyUp(Keys.F2)) {
+                    ((DepthFirst)(PathFinder)).SetNeighbourOrder(NeighbourOrder.RANDOM);
+                    CurrentState = SimState.STARTED;
+                } else if(kState.IsKeyDown(Keys.F3) && LastKeyState.IsKeyUp(Keys.F3)) {
+                    ((DepthFirst)(PathFinder)).SetNeighbourOrder(NeighbourOrder.SMART);
+                    CurrentState = SimState.STARTED;
+                }
+            }
+
+            if(CurrentState == SimState.MENU_ASTAR_OPTIONS) {
+                if(kState.IsKeyDown(Keys.F1) && LastKeyState.IsKeyUp(Keys.F1)) {
+                    AStarTile.HScoreMultiplier = 1;
+                    CurrentState = SimState.STARTED;
+                } else if(kState.IsKeyDown(Keys.F2) && LastKeyState.IsKeyUp(Keys.F2)) {
+                    AStarTile.HScoreMultiplier = 2;
+                    CurrentState = SimState.STARTED;
+                }
+            }
+
+            if(CurrentState == SimState.MENU_ALGORITHM_SELECT) {
+                if(kState.IsKeyDown(Keys.F1) && LastKeyState.IsKeyUp(Keys.F1)) {
+                    PathFinder = new DepthFirst(TileGrid);
+                    CurrentState = SimState.MENU_DEPTHFIRST_OPTIONS;
+                } else if(kState.IsKeyDown(Keys.F2) && LastKeyState.IsKeyUp(Keys.F2)) {
+                    PathFinder = new AStar(TileGrid);
+                    CurrentState = SimState.MENU_ASTAR_OPTIONS;
+                } else if(kState.IsKeyDown(Keys.F3) && LastKeyState.IsKeyUp(Keys.F3)) {
+                    TileGrid.GenRandomGrid(25);
+                }
+            }
+
+            LastKeyState = kState;
 
             base.Update(gameTime);
         }
@@ -86,24 +124,29 @@ namespace Pathfinding {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            TileGrid.Draw(spriteBatch, 0, 30, 700, 700);
+            TileGrid.Draw(spriteBatch, GridDrawArea);
 
             string drawString = "";
-
-            if(!Started) {
+            if(CurrentState != SimState.STARTED) {
                 if(TileGrid.Source == TileGridSource.FILE) {
                     drawString += "Loaded level.bmp | ";
                 } else {
                     drawString += "Couldn't find level.bmp | ";
                 }
+            }
 
-                drawString += "Depth Firs: DFStandard=F1, DFRandom=F2, DFSMART=F3 -- F4 = A* ";
-            } else {
-                drawString += "Working=" + !PathFinder.IsDone + " & Stepcount=" + PathFinder.StepCount + " T=" + PathFinder.TimeRunningMillis + "ms Press ENTER for instant resolve";
+            if(CurrentState == SimState.MENU_ALGORITHM_SELECT) {
+                drawString += "Depth Firs=F1 - A*=F2 - Randomize level=F3";
+            } else if(CurrentState == SimState.MENU_DEPTHFIRST_OPTIONS){
+                drawString += "Standard=F1 - Random=F2 - Smart(ish)=F3";
+            } else if(CurrentState == SimState.MENU_ASTAR_OPTIONS) {
+                drawString += "Precise=F1 - Fast=F2";
+            } else if(CurrentState == SimState.STARTED) {
+                drawString += "Stepcount=" + PathFinder.StepCount + " T=" + PathFinder.TimeRunningMillis + "ms Press ENTER for instant resolve";
             }
 
             spriteBatch.Begin();
-            spriteBatch.DrawString(SimpleFont, drawString, new Vector2(0, 0), Color.White);
+            spriteBatch.DrawString(SimpleFont, drawString, new Vector2(0, 3), Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -115,8 +158,12 @@ namespace Pathfinding {
                 TileGrid.GenFromFile(img);
             } else {
                 TileGrid = new TileGrid(100, 100);
-                TileGrid.GenRandomGrid(25);
+                TileGrid.GenEmptyGrid();
             }
         }
+    }
+
+    enum SimState { 
+        MENU_ALGORITHM_SELECT, MENU_DEPTHFIRST_OPTIONS, MENU_ASTAR_OPTIONS, STARTED
     }
 }

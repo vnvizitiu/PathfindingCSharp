@@ -189,9 +189,36 @@ namespace Pathfinding {
             }
         }
 
+        public bool HasStart() {
+            for(int x = 0; x < Width; x++) {
+                for(int y = 0; y < Height; y++) {
+                    if(Grid[x, y] != null) {
+                        if(Grid[x, y].Type == TileType.START) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool HasEnd() {
+            for(int x = 0; x < Width; x++) {
+                for(int y = 0; y < Height; y++) {
+                    if(Grid[x, y] != null) {
+                        if(Grid[x, y].Type == TileType.END) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         public bool IsValidGrid() {
             bool hasStart = false;
             bool hasEnd = false;
+            bool hasNulls = false;
 
             for(int x = 0; x < Width; x++) {
                 for(int y = 0; y < Height; y++) {
@@ -202,11 +229,11 @@ namespace Pathfinding {
                             hasEnd = true;
                         }
                     } else {
-                        return false;
+                        hasNulls = true;
                     }
                 }
             }
-            return (hasStart && hasEnd);
+            return (!hasNulls && (hasStart && hasEnd));
         }
 
         public Vector2 GetCoordinates(Tile t) {
@@ -218,6 +245,16 @@ namespace Pathfinding {
                 }
             }
             return new Vector2(-1, -1);
+        }
+
+        public Vector2 GetGridCoordinates(Vector2 drawCoordinates, Rectangle drawArea) {
+            int pixelWidth = drawArea.Width / Width;
+            int pixelHeight = drawArea.Height / Height;
+
+            int gridX = (int)Math.Floor((drawCoordinates.X - drawArea.X) / pixelWidth);
+            int gridY = (int)Math.Floor((drawCoordinates.Y - drawArea.Y) / pixelHeight);
+
+            return new Vector2(gridX, gridY);
         }
 
         public int DiagonalDistanceToEnd(Tile t) {
@@ -244,16 +281,41 @@ namespace Pathfinding {
             }
         }
 
-        public void Draw(SpriteBatch sb, int gridX, int gridY, int gridWidth, int gridHeight) {
-            int pixelWidth = gridWidth / Width;
-            int pixelHeight = gridHeight / Height;
+        public void LeftClick(Vector2 click, Rectangle drawArea) {
+            Vector2 gridCoordinates = GetGridCoordinates(click, drawArea);
+            Tile clickedTile = Grid[(int)gridCoordinates.X, (int)gridCoordinates.Y];
+
+            TileType replaceType;
+            if(!HasStart()) {
+                replaceType = TileType.START;
+            } else if(!HasEnd()) {
+                replaceType = TileType.END;
+            } else {
+                replaceType = TileType.CLOSED;
+            }
+
+            if(clickedTile.Type != TileType.START && clickedTile.Type != TileType.END) {
+                clickedTile.Type = replaceType;
+            }
+        }
+
+        public void RightClick(Vector2 click, Rectangle drawArea) {
+            Vector2 gridCoordinates = GetGridCoordinates(click, drawArea);
+            Tile clickedTile = Grid[(int)gridCoordinates.X, (int)gridCoordinates.Y];
+
+            clickedTile.Type = TileType.OPEN;
+        }
+
+        public void Draw(SpriteBatch sb, Rectangle drawArea) {
+            int pixelWidth = drawArea.Width / Width;
+            int pixelHeight = drawArea.Height / Height;
 
             sb.Begin();
 
             for(int x = 0; x < Width; x++) {
                 for(int y = 0; y < Height; y++) {
                     Tile current = Grid[x, y];
-                    sb.Draw(Game1.EmptyPixel, new Rectangle(((x * pixelWidth) + gridX), ((y * pixelHeight) + gridY), pixelWidth, pixelHeight), current.Color);
+                    sb.Draw(Game1.EmptyPixel, new Rectangle(((x * pixelWidth) + drawArea.X), ((y * pixelHeight) + drawArea.Y), pixelWidth, pixelHeight), current.Color);
                 }
             }
             sb.End();
