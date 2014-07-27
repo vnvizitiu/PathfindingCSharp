@@ -106,7 +106,7 @@ namespace Pathfinding {
             }
             foreach(AStarTile t in closedList) {
                 if(t.IsInPath) {
-                    t.BaseTile.Color = new Color(255, 0, 0);
+                    t.BaseTile.Color = new Color(128, 128, 255);
                 } else {
                     float gradient = (255f / (Grid.Height + Grid.Width));
                     float R = (255f - (t.GScore * gradient));
