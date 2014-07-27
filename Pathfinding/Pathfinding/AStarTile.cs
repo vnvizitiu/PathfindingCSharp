@@ -14,7 +14,7 @@ namespace Pathfinding {
 
         public int FScore {
             get {
-                return GScore + HScore;
+                return GScore + (HScore * 2);
             }
         }
 

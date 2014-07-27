@@ -74,6 +74,9 @@ namespace Pathfinding {
             }
 
             if(Started) {
+                if(Keyboard.GetState().IsKeyDown(Keys.Enter)) {
+                    PathFinder.RunTillDone();
+                }
                 PathFinder.DoStep();
             }
 
@@ -96,7 +99,7 @@ namespace Pathfinding {
 
                 drawString += "Depth Firs: DFStandard=F1, DFRandom=F2, DFSMART=F3 -- F4 = A* ";
             } else {
-                drawString += "Working=" + !PathFinder.IsDone + " & Stepcount=" + PathFinder.StepCount + " ";
+                drawString += "Working=" + !PathFinder.IsDone + " & Stepcount=" + PathFinder.StepCount + " T=" + PathFinder.TimeRunningMillis + "ms Press ENTER for instant resolve";
             }
 
             spriteBatch.Begin();

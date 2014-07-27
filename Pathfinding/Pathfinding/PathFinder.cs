@@ -8,7 +8,30 @@ namespace Pathfinding {
 
         protected TileGrid Grid;
         public int StepCount = 0;
-        public bool IsDone = false;
+
+        private bool isDone = false;
+        public bool IsDone {
+            set {
+                isDone = value;
+                endTime = Environment.TickCount;
+            }
+            get {
+                return isDone;
+            }     
+        }
+
+        private int startTime;
+        private int endTime;
+
+        public long TimeRunningMillis {
+            get {
+                if(IsDone) {
+                    return endTime - startTime;
+                } else {
+                    return Environment.TickCount - startTime;
+                }
+            }
+        }
 
         public PathFinder(TileGrid grid) {
             Grid = grid;
@@ -16,6 +39,7 @@ namespace Pathfinding {
             if(!grid.IsValidGrid()) {
                 throw new Exception("Non-valid grid!");
             }
+            startTime = Environment.TickCount;
         }
 
         public virtual void DoStep() {
