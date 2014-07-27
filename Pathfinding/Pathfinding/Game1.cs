@@ -67,6 +67,9 @@ namespace Pathfinding {
                 } else if(Keyboard.GetState().IsKeyDown(Keys.F3)) {
                     Started = true;
                     PathFinder = new DepthFirst(TileGrid, NeighbourOrder.SMART);
+                } else if(Keyboard.GetState().IsKeyDown(Keys.F4)) {
+                    Started = true;
+                    PathFinder = new AStar(TileGrid);
                 }
             }
 

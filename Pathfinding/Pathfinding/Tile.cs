@@ -15,7 +15,7 @@ namespace Pathfinding {
         private Color customColor;
         public Color Color {
             get {
-                if(hasCustomColor) {
+                if(hasCustomColor && !(Type == TileType.START) && !(Type == TileType.END)) {//Start and end can't have custom colors
                     return customColor;
                 } else {
                     if(Type == TileType.START) {

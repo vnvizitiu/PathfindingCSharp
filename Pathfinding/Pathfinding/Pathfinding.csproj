@@ -73,6 +73,8 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AStar.cs" />
+    <Compile Include="AStarTile.cs" />
     <Compile Include="DepthFirst.cs" />
     <Compile Include="PathFinder.cs" />
     <Compile Include="TileGrid.cs" />

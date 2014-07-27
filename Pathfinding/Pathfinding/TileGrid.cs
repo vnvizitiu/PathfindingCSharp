@@ -101,7 +101,7 @@ namespace Pathfinding {
                             var SmartListScores = new int[returnList.Count];
 
                             for(int i = 0; i < returnList.Count(); i++) {
-                                SmartListScores[i] = DistanceToEnd(returnList[i]);
+                                SmartListScores[i] = NonDiagonalDistanceToEnd(returnList[i]);
                             }
                             for(int j = 0; j < returnList.Count(); j++) {
                                 int lowestIndex = -1;
@@ -220,9 +220,18 @@ namespace Pathfinding {
             return new Vector2(-1, -1);
         }
 
-        public int DistanceToEnd(Tile t) {
+        public int DiagonalDistanceToEnd(Tile t) {
             int tileX = (int) GetCoordinates(t).X;
             int tileY = (int) GetCoordinates(t).Y;
+            int endX = (int)GetCoordinates(End).X;
+            int endY = (int)GetCoordinates(End).Y;
+            
+            return (int) (Math.Sqrt((Math.Pow(Math.Abs(tileX - endX), 2) + Math.Pow(Math.Abs(tileY - endY), 2))));
+        }
+
+        public int NonDiagonalDistanceToEnd(Tile t) {
+            int tileX = (int)GetCoordinates(t).X;
+            int tileY = (int)GetCoordinates(t).Y;
             int endX = (int)GetCoordinates(End).X;
             int endY = (int)GetCoordinates(End).Y;
 

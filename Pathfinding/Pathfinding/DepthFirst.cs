@@ -47,13 +47,12 @@ namespace Pathfinding {
         private void SetColors() {
             Grid.ResetColors();
             foreach(Tile t in seen) {
-                t.Color = new Color(128, 0, 0);
+                t.Color = new Color(128, 64, 64);
             }
             foreach(Tile t in path) {
-                t.Color = new Color(0, 0, 128);
+                t.Color = new Color(128, 255, 128);
             }
-            path.Last().Color = new Color(64, 64, 255);
-            path.First().Color = new Color(0, 255, 0);
+            path.Last().Color = new Color(0, 0, 255);
         }
     }
 }
