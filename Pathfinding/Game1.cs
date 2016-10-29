@@ -1,19 +1,21 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
+
+//using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Pathfinding {
+
     public class Game1 : Microsoft.Xna.Framework.Game {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
 
         private Rectangle GridDrawArea = new Rectangle(0, 30, 700, 700);
 
@@ -25,7 +27,7 @@ namespace Pathfinding {
         public static SpriteFont SimpleFont;
         public static Texture2D EmptyPixel;
 
-        KeyboardState LastKeyState;
+        private KeyboardState LastKeyState;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -51,7 +53,6 @@ namespace Pathfinding {
 
             setupLevel();
         }
-
 
         protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
@@ -137,7 +138,7 @@ namespace Pathfinding {
 
             if(CurrentState == SimState.MENU_ALGORITHM_SELECT) {
                 drawString += "Depth Firs=F1 - A*=F2 - Randomize level=F3";
-            } else if(CurrentState == SimState.MENU_DEPTHFIRST_OPTIONS){
+            } else if(CurrentState == SimState.MENU_DEPTHFIRST_OPTIONS) {
                 drawString += "Standard=F1 - Random=F2 - Smart(ish)=F3";
             } else if(CurrentState == SimState.MENU_ASTAR_OPTIONS) {
                 drawString += "Precise=F1 - Fast=F2";
@@ -163,7 +164,7 @@ namespace Pathfinding {
         }
     }
 
-    enum SimState { 
+    internal enum SimState {
         MENU_ALGORITHM_SELECT, MENU_DEPTHFIRST_OPTIONS, MENU_ASTAR_OPTIONS, STARTED
     }
 }

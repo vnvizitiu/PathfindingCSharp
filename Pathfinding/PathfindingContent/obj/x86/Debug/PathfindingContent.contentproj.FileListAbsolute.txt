@@ -1,2 +1,0 @@
-F:\Zooi\github\Pathfinding\Pathfinding\PathfindingContent\obj\x86\Debug\PathfindingContent.contentprojResolveAssemblyReference.cache
-F:\Zooi\github\PathfindingCSharp\Pathfinding\PathfindingContent\obj\x86\Debug\PathfindingContent.contentprojResolveAssemblyReference.cache

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pathfinding", "Pathfinding\Pathfinding\Pathfinding.csproj", "{87BA0B57-CD31-4FFA-AB51-F4490C9E7ABC}"
-EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "PathfindingContent", "Pathfinding\PathfindingContent\PathfindingContent.contentproj", "{BE8CAF15-B2E9-44FC-A324-9CAD8FA27875}"
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pathfinding", "Pathfinding\Pathfinding.csproj", "{4F4B50F9-A9EA-490C-9D05-5155A2E3F20B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +11,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{87BA0B57-CD31-4FFA-AB51-F4490C9E7ABC}.Debug|x86.ActiveCfg = Debug|x86
-		{87BA0B57-CD31-4FFA-AB51-F4490C9E7ABC}.Debug|x86.Build.0 = Debug|x86
-		{87BA0B57-CD31-4FFA-AB51-F4490C9E7ABC}.Release|x86.ActiveCfg = Release|x86
-		{87BA0B57-CD31-4FFA-AB51-F4490C9E7ABC}.Release|x86.Build.0 = Release|x86
-		{BE8CAF15-B2E9-44FC-A324-9CAD8FA27875}.Debug|x86.ActiveCfg = Debug|x86
-		{BE8CAF15-B2E9-44FC-A324-9CAD8FA27875}.Release|x86.ActiveCfg = Release|x86
+		{4F4B50F9-A9EA-490C-9D05-5155A2E3F20B}.Debug|x86.ActiveCfg = Debug|x86
+		{4F4B50F9-A9EA-490C-9D05-5155A2E3F20B}.Debug|x86.Build.0 = Debug|x86
+		{4F4B50F9-A9EA-490C-9D05-5155A2E3F20B}.Release|x86.ActiveCfg = Release|x86
+		{4F4B50F9-A9EA-490C-9D05-5155A2E3F20B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
