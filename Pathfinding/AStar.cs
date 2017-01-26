@@ -12,7 +12,7 @@ namespace Pathfinding {
         private List<AStarTile> openList = new List<AStarTile>();
         private List<AStarTile> closedList = new List<AStarTile>();
 
-        public AStar(TileGrid grid) : base(grid) {
+        public AStar(TileGrid grid, AllowDirection allowDirection) : base(grid, allowDirection) {
             Grid = grid;
             openList.Add(new AStarTile(Grid, Grid.Start, null));
         }
@@ -31,7 +31,7 @@ namespace Pathfinding {
                         IsDone = true;
                         current.AddSelfAndParentToPath();
                     }else{
-                        foreach(Tile neighbour in Grid.GetNeighbours(current.BaseTile, NeighbourOrder.STANDARD)){
+                        foreach(Tile neighbour in Grid.GetNeighbours(current.BaseTile, NeighbourOrder.STANDARD, AllowDirection)){
                             if(neighbour.Type != TileType.CLOSED && !IsInClosedList(neighbour)) {
                                 if(!IsInOpenList(neighbour)) { 
                                     openList.Add(new AStarTile(Grid, neighbour, current));

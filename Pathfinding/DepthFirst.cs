@@ -5,21 +5,21 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace Pathfinding {
-    class DepthFirst : PathFinder{
+    class DepthFirst : PathFinder {
 
         private List<Tile> path = new List<Tile>();
         private List<Tile> seen = new List<Tile>();
 
         private NeighbourOrder TileSelectionMethod = NeighbourOrder.STANDARD;
 
-        public DepthFirst(TileGrid grid) : base(grid){
+        public DepthFirst(TileGrid grid, AllowDirection allowDirection) : base(grid, allowDirection){
             path.Add(grid.Start);
         }
 
         public override void DoStep(){
             if(!IsDone && path.Count > 0) {
                 bool deadEnd = true;
-                foreach(Tile t in Grid.GetNeighbours(path.Last(), TileSelectionMethod)) {
+                foreach(Tile t in Grid.GetNeighbours(path.Last(), TileSelectionMethod, AllowDirection)) {
                     if(t.Type == TileType.END) {
                         deadEnd = false;
                         IsDone = true;
