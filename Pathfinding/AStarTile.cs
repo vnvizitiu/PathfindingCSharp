@@ -5,12 +5,31 @@ using System.Text;
 
 namespace Pathfinding {
     class AStarTile {
+        private const float DiagonalDistanceUnit = 1.41421f; // Sqrt(1^2 + 1^2)
+
         private TileGrid Grid;
 
-        public static float HScoreMultiplier = 2;
+        public static float HScoreMultiplier = -1;
 
         public Tile BaseTile { get; private set; }
-        public AStarTile Parent;
+
+        private AStarTile parent;
+        public AStarTile Parent {
+            get { return parent; }
+            set {
+                if (value != parent) {
+                    parent = value;
+                    if(parent != null) {
+                        var par = Grid.GetCoordinates(Parent.BaseTile);
+                        var me = Grid.GetCoordinates(BaseTile);
+                        var dist = par.X != me.X && par.Y != me.Y ? DiagonalDistanceUnit : 1; //If both X AND Y differ parent is diagonal from me, otherwise it is horizontal/vertical
+                        GScore = Parent.GScore + dist;
+                    } else {
+                        GScore = 1;
+                    }
+                }
+            }
+        }
 
         public bool IsInPath = false;
 
@@ -20,15 +39,7 @@ namespace Pathfinding {
             }
         }
 
-        public int GScore {//Distance to START
-            get {
-                if(Parent != null) {
-                    return Parent.GScore + 1;
-                } else {
-                    return 1;
-                }
-            }
-        }
+        public float GScore { get; protected set; } = 1; //Distance to START
 
         private int hScore = -1;
         public int HScore {// Estimated distance to END

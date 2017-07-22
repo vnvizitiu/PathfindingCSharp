@@ -22,12 +22,14 @@ namespace Pathfinding {
         private TileGrid TileGrid;
         private PathFinder PathFinder;
 
-        private SimState CurrentState = SimState.MENU_ALGORITHM_SELECT;
+        private SimState CurrentState = SimState.MENU_DIRECTION_SELECT;
 
         public static SpriteFont SimpleFont;
         public static Texture2D EmptyPixel;
 
         private KeyboardState LastKeyState;
+
+        private AllowDirection SelectedDirection;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -81,7 +83,7 @@ namespace Pathfinding {
                 }
                 PathFinder.DoStep();
             }
-
+            
             if(CurrentState == SimState.MENU_DEPTHFIRST_OPTIONS) {
                 if(kState.IsKeyDown(Keys.F1) && LastKeyState.IsKeyUp(Keys.F1)) {
                     ((DepthFirst)(PathFinder)).SetNeighbourOrder(NeighbourOrder.STANDARD);
@@ -107,13 +109,24 @@ namespace Pathfinding {
 
             if(CurrentState == SimState.MENU_ALGORITHM_SELECT) {
                 if(kState.IsKeyDown(Keys.F1) && LastKeyState.IsKeyUp(Keys.F1)) {
-                    PathFinder = new DepthFirst(TileGrid);
+                    PathFinder = new DepthFirst(TileGrid, SelectedDirection);
                     CurrentState = SimState.MENU_DEPTHFIRST_OPTIONS;
                 } else if(kState.IsKeyDown(Keys.F2) && LastKeyState.IsKeyUp(Keys.F2)) {
-                    PathFinder = new AStar(TileGrid);
+                    PathFinder = new AStar(TileGrid, SelectedDirection);
                     CurrentState = SimState.MENU_ASTAR_OPTIONS;
                 } else if(kState.IsKeyDown(Keys.F3) && LastKeyState.IsKeyUp(Keys.F3)) {
                     TileGrid.GenRandomGrid(25);
+                }
+            }
+
+            if (CurrentState == SimState.MENU_DIRECTION_SELECT)
+            { 
+                if(kState.IsKeyDown(Keys.F1) && LastKeyState.IsKeyUp(Keys.F1)) {
+                    SelectedDirection = AllowDirection.NONDIAGONAL;
+                    CurrentState = SimState.MENU_ALGORITHM_SELECT;
+                } else if(kState.IsKeyDown(Keys.F2) && LastKeyState.IsKeyUp(Keys.F2)) {
+                    SelectedDirection = AllowDirection.FULL;
+                    CurrentState = SimState.MENU_ALGORITHM_SELECT;
                 }
             }
 
@@ -136,7 +149,9 @@ namespace Pathfinding {
                 }
             }
 
-            if(CurrentState == SimState.MENU_ALGORITHM_SELECT) {
+            if (CurrentState == SimState.MENU_DIRECTION_SELECT) {
+                drawString += "Allow directions: Non-Diagonal=F1 (4d) - Full=F2 (8d)";
+            } else if(CurrentState == SimState.MENU_ALGORITHM_SELECT) {
                 drawString += "Depth Firs=F1 - A*=F2 - Randomize level=F3";
             } else if(CurrentState == SimState.MENU_DEPTHFIRST_OPTIONS) {
                 drawString += "Standard=F1 - Random=F2 - Smart(ish)=F3";
@@ -165,6 +180,6 @@ namespace Pathfinding {
     }
 
     internal enum SimState {
-        MENU_ALGORITHM_SELECT, MENU_DEPTHFIRST_OPTIONS, MENU_ASTAR_OPTIONS, STARTED
+        MENU_DIRECTION_SELECT, MENU_ALGORITHM_SELECT, MENU_DEPTHFIRST_OPTIONS, MENU_ASTAR_OPTIONS, STARTED
     }
 }

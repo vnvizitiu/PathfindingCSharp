@@ -33,13 +33,16 @@ namespace Pathfinding {
             }
         }
 
-        public PathFinder(TileGrid grid) {
+        public AllowDirection AllowDirection { get; }
+
+        public PathFinder(TileGrid grid, AllowDirection allowDirection) {
             Grid = grid;
 
             if(!grid.IsValidGrid()) {
                 throw new Exception("Non-valid grid!");
             }
             startTime = Environment.TickCount;
+            AllowDirection = allowDirection;
         }
 
         public virtual void DoStep() {

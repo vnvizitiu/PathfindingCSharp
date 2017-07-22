@@ -66,7 +66,7 @@ namespace Pathfinding {
             Grid = new Tile[width, height];
         }
 
-        public List<Tile> GetNeighbours(Tile t, NeighbourOrder order) {
+        public List<Tile> GetNeighbours(Tile t, NeighbourOrder order, AllowDirection directions) {
             for(int x = 0; x < Width; x++) {
                 for(int y = 0; y < Height; y++) {
                     Tile current = Grid[x, y];
@@ -84,6 +84,25 @@ namespace Pathfinding {
                         }
                         if(y < Height - 1) {
                             returnList.Add(Grid[x, y + 1]);//Bottom
+                        }
+
+                        if (directions == AllowDirection.FULL) {
+                            if(y > 0) {
+                                if (x > 0) {
+                                    returnList.Add(Grid[x - 1, y - 1]); //Top left
+                                }
+                                if (x < Width - 1) {
+                                    returnList.Add(Grid[x + 1, y - 1]); //Top right
+                                }
+                            }
+                            if (y < Height - 1) {
+                                if (x > 0) {
+                                    returnList.Add(Grid[x - 1, y + 1]); //Bot left
+                                }
+                                if (x < Width - 1) {
+                                    returnList.Add(Grid[x + 1, y + 1]); //Bot right
+                                }
+                            }
                         }
 
                         if(order == NeighbourOrder.RANDOM) {
@@ -328,5 +347,10 @@ namespace Pathfinding {
 
     enum NeighbourOrder { 
         STANDARD, RANDOM, SMART
+    }
+
+    enum AllowDirection
+    {
+        NONDIAGONAL, FULL
     }
 }
